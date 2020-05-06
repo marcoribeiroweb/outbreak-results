@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "f-regular";
+  src: url("~@/assets/fonts/Formular-Regular.woff2") format("woff2"), url("~@/assets/fonts/Formular-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "f-medium";
+  src: url("~@/assets/fonts/Formular-Medium.woff2") format("woff2"), url("~@/assets/fonts/Formular-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@mixin f-regular {
+  font-family: "f-regular";
+  font-weight: normal;
+}
+
+@mixin f-medium {
+  font-family: "f-medium";
+  font-weight: 500;
+}

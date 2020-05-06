@@ -1,0 +1,13 @@
+// Minimum font size
+$rfs-base-value: 16px !default;
+$rfs-unit: px !default;
+
+// Breakpoint at where font-size starts decreasing if screen width is smaller
+$rfs-breakpoint: 1200px !default;
+$rfs-breakpoint-unit: px !default;
+
+//This value determines the strength of font size resizing. The lower the factor, the less influence RFS has, which results in bigger values for small screens.
+$rfs-factor: 3.5;
+
+@import "~rfs/scss";
+@import "@/assets/styles/_fonts.scss";
