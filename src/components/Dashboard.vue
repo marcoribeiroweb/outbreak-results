@@ -10,7 +10,7 @@
       <div class="container">
         <span class="update-title">
           <span class="radar"></span>
-          Atualizado: {{ data.updated | momentDate }}
+          Última atualização: {{ data.updated | momentDate }}
         </span>
         <div class="container-row">
           <div class="card casos-diarios">
