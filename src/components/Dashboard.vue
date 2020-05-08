@@ -10,7 +10,7 @@
       <div class="container">
         <span class="update-title">
           <span class="radar"></span>
-          Atualizado às {{ new Date(data.updated) }}
+          Atualizado: {{ data.updated | momentDate }}
         </span>
         <div class="container-row">
           <div class="card casos-diarios">
@@ -39,7 +39,7 @@
         Casos criticos
         <h3>{{ data.critical }}</h3>
         Testados
-        <h3>{{ data.tests }}</h3> -->
+        <h3>{{ data.tests }}</h3>-->
       </div>
     </main>
   </div>
@@ -47,6 +47,7 @@
 
 <script>
 import axios from "axios";
+import moment from "moment/moment";
 
 export default {
   data() {
@@ -57,6 +58,13 @@ export default {
   },
   created() {
     this.fecthData();
+  },
+  filters: {
+    momentDate(value) {
+      return moment(value)
+        .locale(window.navigator.userLanguage || window.navigator.language)
+        .calendar();
+    },
   },
   methods: {
     fecthData() {
@@ -85,7 +93,6 @@ export default {
 
   .title {
     display: block;
-    max-width: 45%;
     width: 100%;
     @include f-medium;
     @include font-size(46px);
@@ -96,6 +103,7 @@ export default {
 }
 .dashboard-content {
   @include margin-top(-80px);
+  @include padding-bottom(50px);
 
   .update-title {
     display: block;
@@ -140,6 +148,14 @@ export default {
     grid-template-columns: auto auto auto auto;
     grid-template-rows: auto;
     gap: 1em 1em;
+
+    @media only screen and (max-width: 850px) {
+      grid-template-columns: auto auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+      grid-template-columns: auto;
+    }
 
     .card {
       display: block;
