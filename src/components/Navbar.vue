@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="container">
       <img class="logo-svg" src="@/assets/images/logo-covid19.svg" alt="" />
-      <h1 class="logo">Covid-19 Tracker</h1>
+      <h1 class="logo">Outbreak Results</h1>
     </div>
   </nav>
 </template>

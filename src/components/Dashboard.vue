@@ -2,44 +2,35 @@
   <div class="dashboard">
     <header class="dashboard-header">
       <div class="container">
-        <span class="subtitle">Dados Estatísticos</span>
-        <h2 class="title">Covid-19 em Portugal</h2>
+        <span class="subtitle">Statistic data</span>
+        <h2 class="title">Covid-19</h2>
+        <p class="text">The global stats for the Coronavirus (COVID-19) outbreak.</p>
       </div>
     </header>
     <main class="dashboard-content">
       <div class="container">
         <span class="update-title">
           <span class="radar"></span>
-          Última atualização: {{ data.updated | momentDate }}
+          Latest update: {{ dataAll.updated | momentDate }}
         </span>
-        <div class="container-row">
-          <div class="card casos-diarios">
-            <p class="value">{{ data.todayCases }}</p>
-            <h3 class="type">Casos de hoje</h3>
+        <!-- <div class="card casos-diarios">
+            <p class="value">{{ dataAll.todayCases | numberWithCommas }}</p>
+            <h3 class="type">Today's cases</h3>
           </div>
           <div class="card morte-diaria">
-            <p class="value">{{ data.todayDeaths }}</p>
-            <h3 class="type">Mortes de hoje</h3>
+            <p class="value">{{ dataAll.todayDeaths | numberWithCommas }}</p>
+            <h3 class="type">Today's deaths</h3>
           </div>
           <div class="card recuperados">
-            <p class="value">{{ data.recovered }}</p>
-            <h3 class="type">Recuperados</h3>
+            <p class="value">{{ dataAll.recovered | numberWithCommas }}</p>
+            <h3 class="type">Recovered</h3>
           </div>
           <div class="card total">
-            <p class="value">{{ data.cases }}</p>
-            <h3 class="type">Total de casos</h3>
-          </div>
-        </div>
-        <!-- Casos
-        Total Mortes
-        <h3>{{ data.deaths }}</h3>
+            <p class="value">{{ dataAll.cases | numberWithCommas }}</p>
+            <h3 class="type">Total cases</h3>
+          </div> -->
 
-        Casos Activos
-        <h3>{{ data.active }}</h3>
-        Casos criticos
-        <h3>{{ data.critical }}</h3>
-        Testados
-        <h3>{{ data.tests }}</h3>-->
+        <Card :data="dataAll"></Card>
       </div>
     </main>
   </div>
@@ -49,33 +40,40 @@
 import axios from "axios";
 import moment from "moment/moment";
 
+import Card from "./Card";
+
 export default {
   data() {
     return {
-      data: {},
+      dataAll: {},
       loading: true,
     };
   },
   created() {
-    this.fecthData();
+    this.fecthDataAll();
   },
   filters: {
     momentDate(value) {
       return moment(value)
-        .locale(window.navigator.userLanguage || window.navigator.language)
+        .locale("en")
         .calendar();
     },
   },
   methods: {
-    fecthData() {
+    fecthDataAll() {
       axios
-        .get(`https://disease.sh/v2/countries/Portugal`)
+        .get(`https://disease.sh/v2/all`)
         .then((response) => {
-          this.data = response.data;
+          this.dataAll = response.data;
+
+          console.log(this.dataAll);
         })
         .catch(() => {})
         .finally(() => (this.loading = false));
     },
+  },
+  components: {
+    Card,
   },
 };
 </script>
@@ -99,6 +97,16 @@ export default {
     @include margin-top(10px);
     margin-left: -1px;
     line-height: 1.2;
+  }
+
+  .text {
+    display: block;
+    width: 100%;
+    @include f-regular;
+    @include font-size(16px);
+    @include margin-top(10px);
+    line-height: 1.2;
+    color: #556880;
   }
 }
 .dashboard-content {
@@ -139,58 +147,6 @@ export default {
         100% {
           box-shadow: 0 0 0 10px rgba(#53df83, 0);
         }
-      }
-    }
-  }
-
-  .container-row {
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    grid-template-rows: auto;
-    gap: 1em 1em;
-
-    @media only screen and (max-width: 850px) {
-      grid-template-columns: auto auto;
-    }
-
-    @media only screen and (max-width: 500px) {
-      grid-template-columns: auto;
-    }
-
-    .card {
-      display: block;
-      @include padding(25px 30px);
-      border-radius: 4px;
-      background-color: #8870ff;
-      box-shadow: 0px 4px 16px rgba(17, 17, 26, 0.1), 0px 8px 24px rgba(17, 17, 26, 0.1), 0px 16px 56px rgba(17, 17, 26, 0.1);
-
-      &.casos-diarios {
-        background-color: #fcb941;
-      }
-
-      &.morte-diaria {
-        background-color: #f1654c;
-      }
-
-      &.recuperados {
-        background-color: #2cc990;
-      }
-
-      &.total {
-        background-color: #8870ff;
-      }
-
-      .value {
-        @include f-medium;
-        @include font-size(38px);
-        color: #fff;
-      }
-
-      .type {
-        @include f-regular;
-        @include font-size(16px);
-        @include margin-top(10px);
-        color: #fff;
       }
     }
   }
