@@ -4,7 +4,9 @@
       <div class="container">
         <span class="subtitle">Statistic data</span>
         <h2 class="title">Covid-19</h2>
-        <p class="text">The global stats for the Coronavirus (COVID-19) outbreak.</p>
+        <p
+          class="text"
+        >The global stats for the Coronavirus (COVID-19) outbreak, affecting now {{dataAll.affectedCountries}} countries around the world.</p>
       </div>
     </header>
     <main class="dashboard-content">
@@ -28,9 +30,9 @@
           <div class="card total">
             <p class="value">{{ dataAll.cases | numberWithCommas }}</p>
             <h3 class="type">Total cases</h3>
-          </div> -->
+        </div>-->
 
-        <Card :data="dataAll"></Card>
+        <GlobalStats :data="dataAll" :dataYesterday="dataAllYesterday.recovered"></GlobalStats>
       </div>
     </main>
   </div>
@@ -40,41 +42,49 @@
 import axios from "axios";
 import moment from "moment/moment";
 
-import Card from "./Card";
+import GlobalStats from "./GlobalStats";
 
 export default {
   data() {
     return {
       dataAll: {},
-      loading: true,
+      dataAllYesterday: {},
+      loading: true
     };
   },
   created() {
     this.fecthDataAll();
+    this.fecthDataAllYesterday();
   },
   filters: {
     momentDate(value) {
       return moment(value)
         .locale("en")
         .calendar();
-    },
+    }
   },
   methods: {
     fecthDataAll() {
       axios
         .get(`https://disease.sh/v2/all`)
-        .then((response) => {
+        .then(response => {
           this.dataAll = response.data;
-
-          console.log(this.dataAll);
         })
         .catch(() => {})
         .finally(() => (this.loading = false));
     },
+    fecthDataAllYesterday() {
+      axios
+        .get(`https://disease.sh/v2/all?yesterday=true`)
+        .then(response => {
+          this.dataAllYesterday = response.data;
+        })
+        .catch(() => {});
+    }
   },
   components: {
-    Card,
-  },
+    GlobalStats
+  }
 };
 </script>
 
