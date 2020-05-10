@@ -115,7 +115,7 @@ export default {
     @include f-regular;
     @include font-size(16px);
     @include margin-top(10px);
-    line-height: 1.2;
+    line-height: 1.4;
     color: #556880;
   }
 }

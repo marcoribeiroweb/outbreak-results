@@ -150,7 +150,7 @@ export default {
       @include f-medium;
       @include font-size(14px);
       background-color: #fff;
-      border-radius: 4px;
+      border-radius: 2px;
       padding: 5px;
       color: #fff;
     }
