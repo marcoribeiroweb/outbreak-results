@@ -1,8 +1,12 @@
 <template>
   <div class="countries-stats">
     <h2 class="title">Stats per country</h2>
+    <div class="search-wrapper">
+      <input type="text" v-model="search" placeholder="Search for your country..." />
+      <button v-show="search" class="clear-input" @click="cleanInput">clear</button>
+    </div>
     <ul class="countries-stats__list">
-      <li class="countries-stats__list-item" v-for="(country, index) in dataCountries" :key="index">
+      <li class="countries-stats__list-item" v-for="(country, index) in filteredCountries" :key="index">
         <div class="list-number">{{ index + 1 }}</div>
         <div class="list-content-wrapper">
           <div class="country-name-wrapper">
@@ -25,9 +29,9 @@
           </div>
           <div class="value-wrapper total-recovered">
             <span class="value">{{ country.recovered | numberWithCommas }}</span>
-            <span class="secondary-info" v-if="country.recovered - dataYesterday[index].recovered > 0">
-              <span class="secondary-info__value">{{ country.recovered - dataYesterday[index].recovered > 0 ? "+" + (country.recovered - dataYesterday[index].recovered) : ("-" + country.recovered - dataYesterday[index].recovered) | numberWithCommas }}</span>
-            </span>
+            <!-- <span class="secondary-info" v-if="country.recovered - recoveredDataYesterday[index].recovered > 0">
+              <span class="secondary-info__value">{{ country.recovered - recoveredDataYesterday[index].recovered > 0 ? "+" + (country.recovered - recoveredDataYesterday[index].recovered) : ("-" + country.recovered - recoveredDataYesterday[index].recovered) | numberWithCommas }}</span>
+            </span> -->
           </div>
           <div class="value-wrapper active-cases">
             <span class="value">{{ country.active | numberWithCommas }}</span>
@@ -51,9 +55,30 @@ export default {
       type: Array,
     },
   },
+  data() {
+    return {
+      search: "",
+    };
+  },
   filters: {
     numberWithCommas(value) {
       return typeof value != "undefined" ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+    },
+  },
+  computed: {
+    recoveredDataYesterday() {
+      return this.dataYesterday.map((el) => el.recovered);
+    },
+    filteredCountries() {
+      return this.dataCountries.filter((country) => {
+        return country.country.toLowerCase().match(this.search.toLowerCase());
+      });
+    },
+  },
+  methods: {
+    cleanInput() {
+      this.search = "";
+      document.querySelector("input").focus();
     },
   },
 };
@@ -62,6 +87,62 @@ export default {
 <style lang="scss" scoped>
 .countries-stats {
   @include margin-top(100px);
+
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    @include margin-top(30px);
+
+    input {
+      display: block;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      outline: none;
+      appearance: none;
+      border: none;
+      box-shadow: 0px 0px 0px 1px #d4d8dc;
+      border-radius: 4px;
+      padding: 20px;
+      @include f-regular;
+      @include font-size(16px);
+      color: #000;
+
+      &:focus {
+        box-shadow: 0px 0px 0px 1px #a2acb7;
+      }
+
+      @include input-placeholder {
+        @include f-regular;
+        @include font-size(16px);
+        color: #aab3bd;
+      }
+    }
+
+    button {
+      position: absolute;
+      right: 12px;
+      padding: 0;
+      margin: 0;
+      border-radius: 2px;
+      @include f-medium;
+      @include font-size(12px);
+      text-transform: uppercase;
+      appearance: none;
+      padding: 10px;
+      border: none;
+      background-color: #a2acb7;
+      color: #fff;
+      cursor: pointer;
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: #868f98;
+        }
+      }
+    }
+  }
 
   &__list {
     @include margin-top(40px);
