@@ -14,7 +14,7 @@
           Latest update: {{ dataAll.updated | momentDate }}
         </span>
         <GlobalStats :data="dataAll" :dataYesterday="dataAllYesterday.recovered"></GlobalStats>
-        <CountriesStats :dataCountries="dataAllCountries"></CountriesStats>
+        <CountriesStats :dataCountries="dataAllCountries" :dataYesterday="dataAllCountriesYesterday"></CountriesStats>
       </div>
     </main>
   </div>
@@ -27,19 +27,23 @@ import moment from "moment/moment";
 import GlobalStats from "./GlobalStats";
 import CountriesStats from "./CountriesStats";
 
+let globalData = "https://disease.sh/v2/all";
+let globalDataYesterday = "https://disease.sh/v2/all?yesterday=true";
+let countriesData = "https://disease.sh/v2/countries?sort=cases";
+let countriesDataYesterday = "https://disease.sh/v2/countries?yesterday=true&sort=cases";
+
 export default {
   data() {
     return {
       dataAll: {},
       dataAllYesterday: {},
       dataAllCountries: [],
+      dataAllCountriesYesterday: [],
       loading: true,
     };
   },
   created() {
-    this.fecthDataAll();
-    this.fecthDataAllYesterday();
-    this.fecthDataAllCountries();
+    this.getData();
   },
   filters: {
     momentDate(value) {
@@ -49,30 +53,19 @@ export default {
     },
   },
   methods: {
-    fecthDataAll() {
+    getData() {
       axios
-        .get(`https://disease.sh/v2/all`)
-        .then((response) => {
-          this.dataAll = response.data;
-        })
-        .catch(() => {})
+        .all([axios.get(globalData), axios.get(globalDataYesterday), axios.get(countriesData), axios.get(countriesDataYesterday)])
+        .then(
+          axios.spread((globalDataResponse, globalDataYesterdayResponse, countriesDataResponse, countriesDataYesterdayResponse) => {
+            this.dataAll = globalDataResponse.data;
+            this.dataAllYesterday = globalDataYesterdayResponse.data;
+            this.dataAllCountries = countriesDataResponse.data;
+            this.dataAllCountriesYesterday = countriesDataYesterdayResponse.data;
+          })
+        )
+        .catch((error) => console.log(error))
         .finally(() => (this.loading = false));
-    },
-    fecthDataAllYesterday() {
-      axios
-        .get(`https://disease.sh/v2/all?yesterday=true`)
-        .then((response) => {
-          this.dataAllYesterday = response.data;
-        })
-        .catch(() => {});
-    },
-    fecthDataAllCountries() {
-      axios
-        .get(`https://disease.sh/v2/countries?sort=cases`)
-        .then((response) => {
-          this.dataAllCountries = response.data;
-        })
-        .catch(() => {});
     },
   },
   components: {

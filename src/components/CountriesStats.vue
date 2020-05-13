@@ -2,7 +2,7 @@
   <div class="countries-stats">
     <h2 class="title">Stats per country</h2>
     <ul class="countries-stats__list">
-      <li class="countries-stats__list-item" v-for="(country, index) in dataCountries" :key="country.id">
+      <li class="countries-stats__list-item" v-for="(country, index) in dataCountries" :key="index">
         <div class="list-number">{{ index + 1 }}</div>
         <div class="list-content-wrapper">
           <div class="country-name-wrapper">
@@ -23,8 +23,18 @@
               <span class="secondary-info__value">{{ country.todayDeaths > 0 ? "+" + country.todayDeaths : ("-" + country.todayDeaths) | numberWithCommas }}</span>
             </span>
           </div>
-          <div class="value-wrapper total-recovered">{{ country.recovered | numberWithCommas }}</div>
-          <div class="value-wrapper active-cases">{{ country.active | numberWithCommas }}</div>
+          <div class="value-wrapper total-recovered">
+            <span class="value">{{ country.recovered | numberWithCommas }}</span>
+            <span class="secondary-info" v-if="country.recovered - dataYesterday[index].recovered > 0">
+              <span class="secondary-info__value">{{ country.recovered - dataYesterday[index].recovered > 0 ? "+" + (country.recovered - dataYesterday[index].recovered) : ("-" + country.recovered - dataYesterday[index].recovered) | numberWithCommas }}</span>
+            </span>
+          </div>
+          <div class="value-wrapper active-cases">
+            <span class="value">{{ country.active | numberWithCommas }}</span>
+            <span class="secondary-info" v-if="country.critical">
+              <span class="secondary-info__value">{{ country.critical | numberWithCommas }}</span>
+            </span>
+          </div>
         </div>
       </li>
     </ul>
@@ -35,6 +45,9 @@
 export default {
   props: {
     dataCountries: {
+      type: Array,
+    },
+    dataYesterday: {
       type: Array,
     },
   },
@@ -66,7 +79,7 @@ export default {
         justify-content: center;
         @include f-medium;
         @include font-size(16px);
-        background-color: #f2f7fd;
+        background-color: #eef2f7;
         border-radius: 2px;
       }
 
