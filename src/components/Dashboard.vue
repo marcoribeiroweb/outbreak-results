@@ -4,9 +4,7 @@
       <div class="container">
         <span class="subtitle">Statistic data</span>
         <h2 class="title">Covid-19</h2>
-        <p
-          class="text"
-        >The global stats for the Coronavirus (COVID-19) outbreak, affecting now {{dataAll.affectedCountries}} countries around the world.</p>
+        <p class="text">The global stats for the Coronavirus (COVID-19) outbreak, affecting now {{ dataAll.affectedCountries }} countries around the world.</p>
       </div>
     </header>
     <main class="dashboard-content">
@@ -15,24 +13,8 @@
           <span class="radar"></span>
           Latest update: {{ dataAll.updated | momentDate }}
         </span>
-        <!-- <div class="card casos-diarios">
-            <p class="value">{{ dataAll.todayCases | numberWithCommas }}</p>
-            <h3 class="type">Today's cases</h3>
-          </div>
-          <div class="card morte-diaria">
-            <p class="value">{{ dataAll.todayDeaths | numberWithCommas }}</p>
-            <h3 class="type">Today's deaths</h3>
-          </div>
-          <div class="card recuperados">
-            <p class="value">{{ dataAll.recovered | numberWithCommas }}</p>
-            <h3 class="type">Recovered</h3>
-          </div>
-          <div class="card total">
-            <p class="value">{{ dataAll.cases | numberWithCommas }}</p>
-            <h3 class="type">Total cases</h3>
-        </div>-->
-
         <GlobalStats :data="dataAll" :dataYesterday="dataAllYesterday.recovered"></GlobalStats>
+        <CountriesStats :dataCountries="dataAllCountries"></CountriesStats>
       </div>
     </main>
   </div>
@@ -43,31 +25,34 @@ import axios from "axios";
 import moment from "moment/moment";
 
 import GlobalStats from "./GlobalStats";
+import CountriesStats from "./CountriesStats";
 
 export default {
   data() {
     return {
       dataAll: {},
       dataAllYesterday: {},
-      loading: true
+      dataAllCountries: [],
+      loading: true,
     };
   },
   created() {
     this.fecthDataAll();
     this.fecthDataAllYesterday();
+    this.fecthDataAllCountries();
   },
   filters: {
     momentDate(value) {
       return moment(value)
         .locale("en")
         .calendar();
-    }
+    },
   },
   methods: {
     fecthDataAll() {
       axios
         .get(`https://disease.sh/v2/all`)
-        .then(response => {
+        .then((response) => {
           this.dataAll = response.data;
         })
         .catch(() => {})
@@ -76,15 +61,24 @@ export default {
     fecthDataAllYesterday() {
       axios
         .get(`https://disease.sh/v2/all?yesterday=true`)
-        .then(response => {
+        .then((response) => {
           this.dataAllYesterday = response.data;
         })
         .catch(() => {});
-    }
+    },
+    fecthDataAllCountries() {
+      axios
+        .get(`https://disease.sh/v2/countries?sort=cases`)
+        .then((response) => {
+          this.dataAllCountries = response.data;
+        })
+        .catch(() => {});
+    },
   },
   components: {
-    GlobalStats
-  }
+    GlobalStats,
+    CountriesStats,
+  },
 };
 </script>
 

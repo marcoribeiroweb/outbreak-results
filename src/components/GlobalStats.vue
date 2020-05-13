@@ -1,11 +1,11 @@
 <template>
-  <div class="container-row">
+  <div class="global-stats">
     <div v-for="(data, index) in globalData" :key="index" class="card" :class="data.class">
       <h3 class="type">{{ data.name }}</h3>
       <p class="value">{{ data.value | numberWithCommas }}</p>
       <span class="secondary-info" v-if="data.secondaryValue">
-        <span class="secondary-info__value">{{ data.secondaryValue | numberWithCommas}}</span>
-        <span class="secondary-info__text">{{data.secondaryText}}</span>
+        <span class="secondary-info__value">{{ data.secondaryValue | numberWithCommas }}</span>
+        <span class="secondary-info__text">{{ data.secondaryText }}</span>
       </span>
     </div>
   </div>
@@ -15,11 +15,11 @@
 export default {
   props: {
     data: {
-      type: Object
+      type: Object,
     },
     dataYesterday: {
-      type: Number
-    }
+      type: Number,
+    },
   },
   computed: {
     globalData() {
@@ -28,54 +28,43 @@ export default {
           value: this.data.cases,
           name: "Total Cases",
           class: "total-cases",
-          secondaryValue:
-            this.data.todayCases > 0
-              ? `+${this.data.todayCases}`
-              : `-${this.data.todayCases}`,
-          secondaryText: "from yesterday"
+          secondaryValue: this.data.todayCases > 0 ? `+${this.data.todayCases}` : `-${this.data.todayCases}`,
+          secondaryText: "from yesterday",
         },
         {
           value: this.data.deaths,
           name: "Total Deaths",
           class: "total-deaths",
-          secondaryValue:
-            this.data.todayDeaths > 0
-              ? `+${this.data.todayDeaths}`
-              : `-${this.data.todayDeaths}`,
-          secondaryText: "from yesterday"
+          secondaryValue: this.data.todayDeaths > 0 ? `+${this.data.todayDeaths}` : `-${this.data.todayDeaths}`,
+          secondaryText: "from yesterday",
         },
         {
           value: this.data.recovered,
           name: "Total Recovered",
           class: "total-recovered",
-          secondaryValue:
-            this.data.recovered - this.dataYesterday > 0
-              ? `+${this.data.recovered - this.dataYesterday}`
-              : `-${this.data.recovered - this.dataYesterday}`,
-          secondaryText: "from yesterday"
+          secondaryValue: this.data.recovered - this.dataYesterday > 0 ? `+${this.data.recovered - this.dataYesterday}` : `-${this.data.recovered - this.dataYesterday}`,
+          secondaryText: "from yesterday",
         },
         {
           value: this.data.active,
           name: "Active Cases",
           class: "active-cases",
           secondaryValue: this.data.critical,
-          secondaryText: "are critical"
-        }
+          secondaryText: "are critical",
+        },
       ];
-    }
+    },
   },
   filters: {
     numberWithCommas(value) {
-      return typeof value != "undefined"
-        ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-        : "";
-    }
-  }
+      return typeof value != "undefined" ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.container-row {
+.global-stats {
   display: grid;
   grid-template-columns: auto auto auto auto;
   grid-template-rows: auto;
@@ -95,7 +84,7 @@ export default {
   @include padding(20px);
   border-radius: 4px;
   background-color: #8870ff;
-  box-shadow: 0px 4px 16px rgba(17, 17, 26, 0.1);
+  // box-shadow: 0px 4px 16px rgba(17, 17, 26, 0.1);
 
   &.total-cases {
     background-color: #8870ff;
