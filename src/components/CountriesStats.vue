@@ -3,45 +3,61 @@
     <h2 class="title">Stats per country</h2>
     <div class="search-wrapper">
       <input type="text" v-model="search" placeholder="Search for your country..." />
+      <svg class="search-icon" viewBox="0 0 21 21">
+        <path d="M20.2 18.7c.4.4.4 1.1 0 1.5-.4.4-1.1.4-1.5 0L13.6 15c-.2-.2-.6-.2-.8-.1 0 0-.1.1-.4.3-1.2.7-2.5 1-3.9 1-4.4 0-7.9-3.5-7.9-7.9S4 .5 8.4.5s7.9 3.5 7.9 7.9c0 1.4-.4 2.8-1 3.9-.2.3-.3.4-.3.4-.2.2-.1.6.1.8l5.1 5.2zM8.4 14.2c3.2 0 5.8-2.6 5.8-5.8s-2.6-5.8-5.8-5.8-5.8 2.6-5.8 5.8 2.6 5.8 5.8 5.8z" />
+      </svg>
       <button v-show="search" class="clear-input" @click="cleanInput">clear</button>
     </div>
-    <ul class="countries-stats__list">
-      <li class="countries-stats__list-item" v-for="(country, index) in filteredCountries" :key="index">
-        <div class="list-number">{{ index + 1 }}</div>
-        <div class="list-content-wrapper">
-          <div class="country-name-wrapper">
-            <div class="image-wrapper">
-              <img class="flag" :src="country.countryInfo.flag" :title="country.country + ' Flag'" :alt="country.country + ' Flag'" />
+
+    <div class="scroll-min">
+      <div class="countries-stats__bar">
+        <ul>
+          <li>#</li>
+          <li>Country</li>
+          <li>Total Cases</li>
+          <li>Total Deaths</li>
+          <li>Total Recovered</li>
+          <li>Active Cases</li>
+        </ul>
+      </div>
+      <ul class="countries-stats__list">
+        <li class="countries-stats__list-item" v-for="(country, index) in filteredCountries" :key="index">
+          <div class="list-number">{{ index + 1 }}</div>
+          <div class="list-content-wrapper">
+            <div class="country-name-wrapper">
+              <div class="image-wrapper">
+                <img class="flag" :src="country.countryInfo.flag" :title="country.country + ' Flag'" :alt="country.country + ' Flag'" />
+              </div>
+              <h3 class="country-name">{{ country.country }}</h3>
             </div>
-            <h3 class="country-name">{{ country.country }}</h3>
-          </div>
-          <div class="value-wrapper total-cases">
-            <span class="value">{{ country.cases | numberWithCommas }}</span>
-            <span class="secondary-info" v-if="country.todayCases">
-              <span class="secondary-info__value">{{ country.todayCases > 0 ? "+" + country.todayCases : ("-" + country.todayCases) | numberWithCommas }}</span>
-            </span>
-          </div>
-          <div class="value-wrapper total-deaths">
-            <span class="value">{{ country.deaths | numberWithCommas }}</span>
-            <span class="secondary-info" v-if="country.todayDeaths">
-              <span class="secondary-info__value">{{ country.todayDeaths > 0 ? "+" + country.todayDeaths : ("-" + country.todayDeaths) | numberWithCommas }}</span>
-            </span>
-          </div>
-          <div class="value-wrapper total-recovered">
-            <span class="value">{{ country.recovered | numberWithCommas }}</span>
-            <!-- <span class="secondary-info" v-if="country.recovered - recoveredDataYesterday[index].recovered > 0">
+            <div class="value-wrapper total-cases">
+              <span class="value">{{ country.cases | numberWithCommas }}</span>
+              <span class="secondary-info" v-if="country.todayCases">
+                <span class="secondary-info__value">{{ country.todayCases > 0 ? "+" + country.todayCases : ("-" + country.todayCases) | numberWithCommas }}</span>
+              </span>
+            </div>
+            <div class="value-wrapper total-deaths">
+              <span class="value">{{ country.deaths | numberWithCommas }}</span>
+              <span class="secondary-info" v-if="country.todayDeaths">
+                <span class="secondary-info__value">{{ country.todayDeaths > 0 ? "+" + country.todayDeaths : ("-" + country.todayDeaths) | numberWithCommas }}</span>
+              </span>
+            </div>
+            <div class="value-wrapper total-recovered">
+              <span class="value">{{ country.recovered | numberWithCommas }}</span>
+              <!-- <span class="secondary-info" v-if="country.recovered - recoveredDataYesterday[index].recovered > 0">
               <span class="secondary-info__value">{{ country.recovered - recoveredDataYesterday[index].recovered > 0 ? "+" + (country.recovered - recoveredDataYesterday[index].recovered) : ("-" + country.recovered - recoveredDataYesterday[index].recovered) | numberWithCommas }}</span>
             </span> -->
+            </div>
+            <div class="value-wrapper active-cases">
+              <span class="value">{{ country.active | numberWithCommas }}</span>
+              <span class="secondary-info" v-if="country.critical">
+                <span class="secondary-info__value">{{ country.critical | numberWithCommas }}</span>
+              </span>
+            </div>
           </div>
-          <div class="value-wrapper active-cases">
-            <span class="value">{{ country.active | numberWithCommas }}</span>
-            <span class="secondary-info" v-if="country.critical">
-              <span class="secondary-info__value">{{ country.critical | numberWithCommas }}</span>
-            </span>
-          </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -94,6 +110,17 @@ export default {
     align-items: center;
     @include margin-top(30px);
 
+    .search-icon {
+      width: 18px;
+      height: 18px;
+      position: absolute;
+      left: 15px;
+
+      path {
+        fill: #c1c6cc;
+      }
+    }
+
     input {
       display: block;
       margin: 0;
@@ -104,13 +131,19 @@ export default {
       border: none;
       box-shadow: 0px 0px 0px 1px #d4d8dc;
       border-radius: 4px;
-      padding: 20px;
+      padding: 20px 20px 20px 45px;
       @include f-regular;
       @include font-size(16px);
       color: #000;
 
       &:focus {
         box-shadow: 0px 0px 0px 1px #a2acb7;
+
+        + .search-icon {
+          path {
+            fill: #a2acb7;
+          }
+        }
       }
 
       @include input-placeholder {
@@ -144,8 +177,41 @@ export default {
     }
   }
 
+  &__bar {
+    position: sticky;
+    top: 0;
+    @include margin-top(60px);
+    z-index: 1;
+    min-width: 970px;
+
+    ul {
+      display: grid;
+      grid-template-columns: 50px 180px 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr;
+      gap: 8px;
+      padding: 20px;
+      background-color: #eef3f9;
+      border-radius: 2px;
+      box-shadow: 0px 1px 2px 0px rgba(51, 73, 103, 0.15);
+
+      li {
+        @include f-medium;
+        @include font-size(15px);
+
+        &:first-child {
+          position: relative;
+          left: -20px;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
+
   &__list {
-    @include margin-top(40px);
+    @include margin-top(20px);
 
     &-item {
       display: grid;
@@ -160,17 +226,18 @@ export default {
         justify-content: center;
         @include f-medium;
         @include font-size(16px);
-        background-color: #eef2f7;
+        background-color: #eef3f9;
         border-radius: 2px;
+        box-shadow: 0px 1px 2px 0px rgba(51, 73, 103, 0.15);
       }
 
       .list-content-wrapper {
         display: grid;
-        grid-template-columns: 140px 1fr 1fr 1fr 1fr;
+        grid-template-columns: 180px 1fr 1fr 1fr 1fr;
         grid-template-rows: auto;
         background-color: #fff;
         padding: 20px;
-        box-shadow: 0px 0px 16px rgba(17, 17, 26, 0.08);
+        box-shadow: 0px 0px 6px 0px rgba(154, 170, 191, 0.25);
         border-radius: 4px;
         gap: 10px;
 
@@ -268,6 +335,7 @@ export default {
           .country-name {
             @include f-medium;
             @include font-size(16px);
+            line-height: 1.2;
             margin-left: 10px;
           }
         }

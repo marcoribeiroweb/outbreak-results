@@ -78,7 +78,7 @@ export default {
 <style lang="scss" scoped>
 .dashboard-header {
   @include padding(200px 0 200px);
-  background-color: #f2f7fd;
+  background-color: #eef3f9;
 
   .subtitle {
     display: block;
