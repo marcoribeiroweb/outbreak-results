@@ -2,13 +2,12 @@
   <div class="countries-stats">
     <h2 class="title">Stats per country</h2>
     <div class="search-wrapper">
-      <input type="text" v-model="search" placeholder="Search for your country..." />
+      <input type="text" v-model="searchedCountry" placeholder="Search for your country..." />
       <svg class="search-icon" viewBox="0 0 21 21">
         <path d="M20.2 18.7c.4.4.4 1.1 0 1.5-.4.4-1.1.4-1.5 0L13.6 15c-.2-.2-.6-.2-.8-.1 0 0-.1.1-.4.3-1.2.7-2.5 1-3.9 1-4.4 0-7.9-3.5-7.9-7.9S4 .5 8.4.5s7.9 3.5 7.9 7.9c0 1.4-.4 2.8-1 3.9-.2.3-.3.4-.3.4-.2.2-.1.6.1.8l5.1 5.2zM8.4 14.2c3.2 0 5.8-2.6 5.8-5.8s-2.6-5.8-5.8-5.8-5.8 2.6-5.8 5.8 2.6 5.8 5.8 5.8z" />
       </svg>
-      <button v-show="search" class="clear-input" @click="cleanInput">clear</button>
+      <button v-show="searchedCountry" class="clear-input" @click="cleanSearchCountry">clear</button>
     </div>
-
     <div class="scroll-min">
       <div class="countries-stats__bar">
         <ul>
@@ -20,6 +19,7 @@
           <li>Active Cases</li>
         </ul>
       </div>
+
       <ul class="countries-stats__list">
         <li class="countries-stats__list-item" v-for="(country, index) in filteredCountries" :key="index">
           <div class="list-number">{{ index + 1 }}</div>
@@ -44,9 +44,9 @@
             </div>
             <div class="value-wrapper total-recovered">
               <span class="value">{{ country.recovered | numberWithCommas }}</span>
-              <!-- <span class="secondary-info" v-if="country.recovered - recoveredDataYesterday[index].recovered > 0">
-              <span class="secondary-info__value">{{ country.recovered - recoveredDataYesterday[index].recovered > 0 ? "+" + (country.recovered - recoveredDataYesterday[index].recovered) : ("-" + country.recovered - recoveredDataYesterday[index].recovered) | numberWithCommas }}</span>
-            </span> -->
+              <span class="secondary-info" v-if="country.todayRecovered > 0">
+                <span class="secondary-info__value">{{ ("+" + country.todayRecovered) | numberWithCommas }}</span>
+              </span>
             </div>
             <div class="value-wrapper active-cases">
               <span class="value">{{ country.active | numberWithCommas }}</span>
@@ -73,7 +73,7 @@ export default {
   },
   data() {
     return {
-      search: "",
+      searchedCountry: "",
     };
   },
   filters: {
@@ -82,18 +82,22 @@ export default {
     },
   },
   computed: {
-    recoveredDataYesterday() {
-      return this.dataYesterday.map((el) => el.recovered);
+    updateDataCountries() {
+      let cloneDataCountries = [...this.dataCountries];
+      let recoveredYesterday = this.dataYesterday.map((el) => el.recovered);
+
+      cloneDataCountries.forEach((el, i) => (el.todayRecovered = el.recovered - recoveredYesterday[i]));
+      return cloneDataCountries;
     },
     filteredCountries() {
-      return this.dataCountries.filter((country) => {
-        return country.country.toLowerCase().match(this.search.toLowerCase());
+      return this.updateDataCountries.filter((country) => {
+        return country.country.toLowerCase().match(this.searchedCountry.toLowerCase());
       });
     },
   },
   methods: {
-    cleanInput() {
-      this.search = "";
+    cleanSearchCountry() {
+      this.searchedCountry = "";
       document.querySelector("input").focus();
     },
   },
