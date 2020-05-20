@@ -2,7 +2,9 @@
   <div class="countries-stats">
     <h2 class="title">Stats per country</h2>
     <div class="search-wrapper">
-      <input type="text" v-model="searchedCountry" placeholder="Search for your country..." />
+      <label for="search-input">
+        <input type="text" name="search-input" v-model="searchedCountry" placeholder="Search for your country..." />
+      </label>
       <svg class="search-icon" viewBox="0 0 21 21">
         <path
           d="M20.2 18.7c.4.4.4 1.1 0 1.5-.4.4-1.1.4-1.5 0L13.6 15c-.2-.2-.6-.2-.8-.1 0 0-.1.1-.4.3-1.2.7-2.5 1-3.9 1-4.4 0-7.9-3.5-7.9-7.9S4 .5 8.4.5s7.9 3.5 7.9 7.9c0 1.4-.4 2.8-1 3.9-.2.3-.3.4-.3.4-.2.2-.1.6.1.8l5.1 5.2zM8.4 14.2c3.2 0 5.8-2.6 5.8-5.8s-2.6-5.8-5.8-5.8-5.8 2.6-5.8 5.8 2.6 5.8 5.8 5.8z"
