@@ -4,103 +4,131 @@
     <div class="search-wrapper">
       <input type="text" v-model="searchedCountry" placeholder="Search for your country..." />
       <svg class="search-icon" viewBox="0 0 21 21">
-        <path d="M20.2 18.7c.4.4.4 1.1 0 1.5-.4.4-1.1.4-1.5 0L13.6 15c-.2-.2-.6-.2-.8-.1 0 0-.1.1-.4.3-1.2.7-2.5 1-3.9 1-4.4 0-7.9-3.5-7.9-7.9S4 .5 8.4.5s7.9 3.5 7.9 7.9c0 1.4-.4 2.8-1 3.9-.2.3-.3.4-.3.4-.2.2-.1.6.1.8l5.1 5.2zM8.4 14.2c3.2 0 5.8-2.6 5.8-5.8s-2.6-5.8-5.8-5.8-5.8 2.6-5.8 5.8 2.6 5.8 5.8 5.8z" />
+        <path
+          d="M20.2 18.7c.4.4.4 1.1 0 1.5-.4.4-1.1.4-1.5 0L13.6 15c-.2-.2-.6-.2-.8-.1 0 0-.1.1-.4.3-1.2.7-2.5 1-3.9 1-4.4 0-7.9-3.5-7.9-7.9S4 .5 8.4.5s7.9 3.5 7.9 7.9c0 1.4-.4 2.8-1 3.9-.2.3-.3.4-.3.4-.2.2-.1.6.1.8l5.1 5.2zM8.4 14.2c3.2 0 5.8-2.6 5.8-5.8s-2.6-5.8-5.8-5.8-5.8 2.6-5.8 5.8 2.6 5.8 5.8 5.8z"
+        />
       </svg>
       <button v-show="searchedCountry" class="clear-input" @click="cleanSearchCountry">clear</button>
     </div>
-    <div class="scroll-min">
-      <div class="countries-stats__bar">
-        <ul>
-          <li>#</li>
-          <li>Country</li>
-          <li>Total Cases</li>
-          <li>Total Deaths</li>
-          <li>Total Recovered</li>
-          <li>Active Cases</li>
+    <div class="scroll-container" sticky-container>
+      <div class="scroll-inner">
+        <div class="countries-stats__bar">
+          <ul v-sticky>
+            <li>#</li>
+            <li>Country</li>
+            <li>Total Cases</li>
+            <li>Total Deaths</li>
+            <li>Total Recovered</li>
+            <li>Active Cases</li>
+          </ul>
+        </div>
+
+        <ul class="countries-stats__list">
+          <li
+            class="countries-stats__list-item"
+            v-for="(country, index) in filteredCountries"
+            :key="index"
+          >
+            <div class="list-number">{{ index + 1 }}</div>
+            <div class="list-content-wrapper">
+              <div class="country-name-wrapper">
+                <div class="image-wrapper">
+                  <img
+                    class="flag"
+                    :src="country.countryInfo.flag"
+                    :title="country.country + ' Flag'"
+                    :alt="country.country + ' Flag'"
+                  />
+                </div>
+                <h3 class="country-name">{{ country.country }}</h3>
+              </div>
+              <div class="value-wrapper total-cases">
+                <span class="value">{{ country.cases | numberWithCommas }}</span>
+                <span class="secondary-info" v-if="country.todayCases">
+                  <span
+                    class="secondary-info__value"
+                  >{{ country.todayCases > 0 ? "+" + country.todayCases : ("-" + country.todayCases) | numberWithCommas }}</span>
+                </span>
+              </div>
+              <div class="value-wrapper total-deaths">
+                <span class="value">{{ country.deaths | numberWithCommas }}</span>
+                <span class="secondary-info" v-if="country.todayDeaths">
+                  <span
+                    class="secondary-info__value"
+                  >{{ country.todayDeaths > 0 ? "+" + country.todayDeaths : ("-" + country.todayDeaths) | numberWithCommas }}</span>
+                </span>
+              </div>
+              <div class="value-wrapper total-recovered">
+                <span class="value">{{ country.recovered | numberWithCommas }}</span>
+                <span class="secondary-info" v-if="country.todayRecovered > 0">
+                  <span
+                    class="secondary-info__value"
+                  >{{ ("+" + country.todayRecovered) | numberWithCommas }}</span>
+                </span>
+              </div>
+              <div class="value-wrapper active-cases">
+                <span class="value">{{ country.active | numberWithCommas }}</span>
+                <span class="secondary-info" v-if="country.critical">
+                  <span class="secondary-info__value">{{ country.critical | numberWithCommas }}</span>
+                </span>
+              </div>
+            </div>
+          </li>
         </ul>
       </div>
-
-      <ul class="countries-stats__list">
-        <li class="countries-stats__list-item" v-for="(country, index) in filteredCountries" :key="index">
-          <div class="list-number">{{ index + 1 }}</div>
-          <div class="list-content-wrapper">
-            <div class="country-name-wrapper">
-              <div class="image-wrapper">
-                <img class="flag" :src="country.countryInfo.flag" :title="country.country + ' Flag'" :alt="country.country + ' Flag'" />
-              </div>
-              <h3 class="country-name">{{ country.country }}</h3>
-            </div>
-            <div class="value-wrapper total-cases">
-              <span class="value">{{ country.cases | numberWithCommas }}</span>
-              <span class="secondary-info" v-if="country.todayCases">
-                <span class="secondary-info__value">{{ country.todayCases > 0 ? "+" + country.todayCases : ("-" + country.todayCases) | numberWithCommas }}</span>
-              </span>
-            </div>
-            <div class="value-wrapper total-deaths">
-              <span class="value">{{ country.deaths | numberWithCommas }}</span>
-              <span class="secondary-info" v-if="country.todayDeaths">
-                <span class="secondary-info__value">{{ country.todayDeaths > 0 ? "+" + country.todayDeaths : ("-" + country.todayDeaths) | numberWithCommas }}</span>
-              </span>
-            </div>
-            <div class="value-wrapper total-recovered">
-              <span class="value">{{ country.recovered | numberWithCommas }}</span>
-              <span class="secondary-info" v-if="country.todayRecovered > 0">
-                <span class="secondary-info__value">{{ ("+" + country.todayRecovered) | numberWithCommas }}</span>
-              </span>
-            </div>
-            <div class="value-wrapper active-cases">
-              <span class="value">{{ country.active | numberWithCommas }}</span>
-              <span class="secondary-info" v-if="country.critical">
-                <span class="secondary-info__value">{{ country.critical | numberWithCommas }}</span>
-              </span>
-            </div>
-          </div>
-        </li>
-      </ul>
     </div>
   </div>
 </template>
 
 <script>
+import Sticky from "vue-sticky-directive";
+
 export default {
   props: {
     dataCountries: {
-      type: Array,
+      type: Array
     },
     dataYesterday: {
-      type: Array,
-    },
+      type: Array
+    }
   },
   data() {
     return {
-      searchedCountry: "",
+      searchedCountry: ""
     };
   },
+  directives: { Sticky },
   filters: {
     numberWithCommas(value) {
-      return typeof value != "undefined" ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
-    },
+      return typeof value != "undefined"
+        ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        : "";
+    }
   },
   computed: {
     updateDataCountries() {
       let cloneDataCountries = [...this.dataCountries];
-      let recoveredYesterday = this.dataYesterday.map((el) => el.recovered);
+      let recoveredYesterday = this.dataYesterday.map(el => el.recovered);
 
-      cloneDataCountries.forEach((el, i) => (el.todayRecovered = el.recovered - recoveredYesterday[i]));
+      cloneDataCountries.forEach(
+        (el, i) => (el.todayRecovered = el.recovered - recoveredYesterday[i])
+      );
       return cloneDataCountries;
     },
     filteredCountries() {
-      return this.updateDataCountries.filter((country) => {
-        return country.country.toLowerCase().match(this.searchedCountry.toLowerCase());
+      return this.updateDataCountries.filter(country => {
+        return country.country
+          .toLowerCase()
+          .match(this.searchedCountry.toLowerCase());
       });
-    },
+    }
   },
   methods: {
     cleanSearchCountry() {
       this.searchedCountry = "";
       document.querySelector("input").focus();
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -181,9 +209,21 @@ export default {
     }
   }
 
+  .scroll-container {
+    position: relative;
+    width: 100%;
+
+    @media only screen and (max-width: 970px) {
+      overflow-x: scroll;
+    }
+
+    .scroll-inner {
+      min-width: 970px;
+    }
+  }
+
   &__bar {
-    position: sticky;
-    top: 0;
+    position: relative;
     @include margin-top(60px);
     z-index: 1;
     min-width: 970px;

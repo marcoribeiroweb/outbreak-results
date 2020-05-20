@@ -4,16 +4,17 @@
       <div class="container">
         <span class="subtitle">Statistic data</span>
         <h2 class="title">Covid-19</h2>
-        <p class="text">The global stats for the Coronavirus (COVID-19) outbreak, affecting now {{ dataAll.affectedCountries }} countries around the world.</p>
+        <p class="text">The global stats for the Coronavirus (COVID-19) outbreak, affecting now {{ loading ? "..." : dataAll.affectedCountries }} countries around the world.</p>
       </div>
     </header>
     <main class="dashboard-content">
       <div class="container">
         <span class="update-title">
           <span class="radar"></span>
-          Latest update: {{ dataAll.updated | momentDate }}
+          <span v-if="loading"> Latest update: ... </span>
+          <span v-else> Latest update: {{ dataAll.updated | momentDate }} </span>
         </span>
-        <GlobalStats :data="dataAll" :dataYesterday="dataAllYesterday.recovered"></GlobalStats>
+        <GlobalStats :data="dataAll" :dataYesterday="dataAllYesterday.recovered" :loading="loading"></GlobalStats>
         <CountriesStats :dataCountries="dataAllCountries" :dataYesterday="dataAllCountriesYesterday"></CountriesStats>
       </div>
     </main>
@@ -67,6 +68,20 @@ export default {
         .catch((error) => console.log(error))
         .finally(() => (this.loading = false));
     },
+    dashboardContentOffset() {
+      let title = document.querySelector(".update-title");
+      let globalData = document.querySelector(".global-stats .card");
+      let elem = document.querySelector(".dashboard-content");
+
+      let titleHeight = title.offsetHeight + parseFloat(getComputedStyle(title).marginBottom);
+      let globalDataHeight = globalData.offsetHeight;
+      let offset = titleHeight + globalDataHeight / 2;
+
+      elem.style.marginTop = `-${offset}px`;
+    },
+  },
+  mounted() {
+    this.dashboardContentOffset();
   },
   components: {
     GlobalStats,
@@ -79,6 +94,10 @@ export default {
 .dashboard-header {
   @include padding(200px 0 200px);
   background-color: #eef3f9;
+
+  @media only screen and (max-width: 768px) {
+    padding: 140px 0 170px;
+  }
 
   .subtitle {
     display: block;
@@ -107,7 +126,6 @@ export default {
   }
 }
 .dashboard-content {
-  @include margin-top(-80px);
   @include padding-bottom(50px);
 
   .update-title {

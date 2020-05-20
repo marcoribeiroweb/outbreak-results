@@ -14,7 +14,8 @@
     "normalize.css": "^8.0.1",
     "reset-css": "^5.0.1",
     "rfs": "^9.0.3",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-sticky-directive": "0.0.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",

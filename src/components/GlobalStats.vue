@@ -1,12 +1,14 @@
 <template>
-  <div class="global-stats">
-    <div v-for="(data, index) in globalData" :key="index" class="card" :class="data.class">
-      <h3 class="type">{{ data.name }}</h3>
-      <p class="value">{{ data.value | numberWithCommas }}</p>
-      <span class="secondary-info" v-if="data.secondaryValue">
-        <span class="secondary-info__value">{{ data.secondaryValue | numberWithCommas }}</span>
-        <span class="secondary-info__text">{{ data.secondaryText }}</span>
-      </span>
+  <div class="global-stats-wrapper">
+    <div class="global-stats">
+      <div v-for="(data, index) in globalData" :key="index" class="card" :class="data.class">
+        <h3 class="type" :class="{ load: loading }">{{ data.name }}</h3>
+        <p class="value" :class="{ load: loading }">{{ loading ? "0000000" : data.value | numberWithCommas }}</p>
+        <span class="secondary-info" v-if="data.secondaryValue">
+          <span class="secondary-info__value" :class="{ load: loading }">{{ loading ? "00000" : data.secondaryValue | numberWithCommas }}</span>
+          <span class="secondary-info__text" :class="{ load: loading }">{{ data.secondaryText }}</span>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -19,6 +21,9 @@ export default {
     },
     dataYesterday: {
       type: Number,
+    },
+    loading: {
+      type: Boolean,
     },
   },
   computed: {
@@ -94,6 +99,11 @@ export default {
         color: #8870ff;
       }
     }
+
+    .load {
+      background: linear-gradient(90deg, rgba(#8870ff, 1) 0%, rgba(#7964e4, 1) 100%);
+      color: transparent;
+    }
   }
 
   &.active-cases {
@@ -104,6 +114,11 @@ export default {
         background-color: #fff;
         color: #fcb941;
       }
+    }
+
+    .load {
+      background: linear-gradient(90deg, rgba(#fcb941, 1) 0%, rgba(#eaac3c, 1) 100%);
+      color: transparent;
     }
   }
 
@@ -116,6 +131,11 @@ export default {
         color: #f1654c;
       }
     }
+
+    .load {
+      background: linear-gradient(90deg, rgba(#f1654c, 1) 0%, rgba(#de5c45, 1) 100%);
+      color: transparent;
+    }
   }
 
   &.total-recovered {
@@ -126,6 +146,11 @@ export default {
         background-color: #fff;
         color: #2cc990;
       }
+    }
+
+    .load {
+      background: linear-gradient(90deg, rgba(#2cc990, 1) 0%, rgba(#28bb86, 1) 100%);
+      color: transparent;
     }
   }
 
@@ -160,6 +185,7 @@ export default {
   }
 
   .type {
+    display: inline-block;
     @include f-medium;
     @include font-size(14px);
     @include margin-bottom(8px);
