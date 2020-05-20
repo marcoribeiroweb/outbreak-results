@@ -2,8 +2,8 @@
   <div class="countries-stats">
     <h2 class="title">Stats per country</h2>
     <div class="search-wrapper">
-      <label for="search-input">
-        <input type="text" name="search-input" v-model="searchedCountry" placeholder="Search for your country..." />
+      <label>
+        <input type="text" v-model="searchedCountry" placeholder="Search for your country..." />
       </label>
       <svg class="search-icon" viewBox="0 0 21 21">
         <path
@@ -153,6 +153,10 @@ export default {
       path {
         fill: #c1c6cc;
       }
+    }
+
+    label {
+      width: 100%;
     }
 
     input {
